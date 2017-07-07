@@ -60,14 +60,14 @@ define luks::device(
   $luks_keychange = "luks-keychange-${name}"
 
   if $base64 {
-    $echo_cmd = 'echo -n "$(puppet node decrypt --env CRYPTKEY)" | /usr/bin/base64 -d'
+    $echo_cmd = '/bin/echo -n "$(puppet node decrypt --env CRYPTKEY)" | /usr/bin/base64 -d'
   } else {
-    $echo_cmd = 'echo -n "$(puppet node decrypt --env CRYPTKEY)"'
+    $echo_cmd = '/bin/echo -n "$(puppet node decrypt --env CRYPTKEY)"'
   }
 
   $cryptsetup_cmd = '/sbin/cryptsetup'
   $cryptsetup_key_cmd = "${echo_cmd} | ${cryptsetup_cmd} --key-file -"
-  $master_key_cmd = "dmsetup table --target crypt --showkey ${devmapper} | cut -f5 -d\" \" | xxd -r -p"
+  $master_key_cmd = "/sbin/dmsetup table --target crypt --showkey ${devmapper} | cut -f5 -d\" \" | xxd -r -p"
 
   if $force_format == true {
     $format_options = '--batch-mode'
